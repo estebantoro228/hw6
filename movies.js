@@ -71,7 +71,6 @@ window.addEventListener('DOMContentLoaded', async function(event) {
         event.preventDefault()
         console.log(`movies-${movieId} watched button clicked!`)
         document.querySelector(`.movies-${movieId} .watched-button`).classList.add('opacity-20')
-        
     
     })
     }
