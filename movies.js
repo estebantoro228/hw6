@@ -10,8 +10,6 @@
 // Note: image data returned by the API will only give you the filename;
 // prepend with `https://image.tmdb.org/t/p/w500/` to get the 
 // complete image URL
-let db = firebase.firestore()
-
 window.addEventListener('DOMContentLoaded', async function(event) {
 
     // Step 1: Construct a URL to get movies playing now from TMDB, fetch
@@ -39,13 +37,16 @@ window.addEventListener('DOMContentLoaded', async function(event) {
     //   <a href="#" class="watched-button block text-center text-white bg-green-500 mt-4 px-4 py-2 rounded">I've watched this!</a>
     // </div>
     // ⬇️ ⬇️ ⬇️
- 
+    let db = firebase.firestore()
+    let querySnapshot = await db.collection('watched').get()
+
     let moviesList = movies[0].results
     console.log(moviesList.length)
 
     for (let i=0; i<movies[0].results.length; i++) {
         let movieId = moviesList[i].id 
         let Poster = moviesList[i].poster_path
+        
 
        document.querySelector('.movies').insertAdjacentHTML('beforeend', 
        `<div class="w-1/5 p-4 movies-${movieId}">
@@ -67,11 +68,27 @@ window.addEventListener('DOMContentLoaded', async function(event) {
     //   the movie is watched. Use .classList.remove('opacity-20')
     //   to remove the class if the element already contains it.
     // ⬇️ ⬇️ ⬇️
-    document.querySelector(`.movies-${movieId} .watched-button`).addEventListener('click', async function(event) {
-        event.preventDefault()
-        console.log(`movies-${movieId} watched button clicked!`)
-        document.querySelector(`.movies-${movieId} .watched-button`).classList.add('opacity-20')
     
+    let querySnapshot = await db.collection('watched').get()
+    let watched = querySnapshot.docs
+    for (let j=0; j<watched.length; j++) {
+        let watchedId = watched[j].id
+        if(watchedId == movieId) {
+            document.querySelector(`.movies-${movieId}`) .classList.add('opacity-20')
+        }
+    }
+
+    document.querySelector(`.movies-${movieId}`).addEventListener('click',async function (event){
+    event.preventDefault()
+        if (document.querySelector(`.movies-${movieId}`).classList.contains('opacity-20') == true) {
+          document.querySelector(`.movies-${movieId}`).classList.remove('opacity-20')
+          await db.collection('watched').doc(`${movieId}`).delete()
+        }       
+        else {
+        document.querySelector(`.movies-${movieId}`).classList.add('opacity-20')
+        docRef=await db.collection(`watched`).doc(`${movieId}`).set({})
+        
+        }
     })
     }
     // ⬆️ ⬆️ ⬆️ 
