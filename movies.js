@@ -78,7 +78,7 @@ window.addEventListener('DOMContentLoaded', async function(event) {
         }
     }
 
-    document.querySelector(`.movies-${movieId}`).addEventListener('click',async function (event){
+    document.querySelector(`.movies-${movieId} .watched-button`).addEventListener('click',async function (event){
     event.preventDefault()
         if (document.querySelector(`.movies-${movieId}`).classList.contains('opacity-20') == true) {
           document.querySelector(`.movies-${movieId}`).classList.remove('opacity-20')
